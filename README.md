@@ -1,4 +1,4 @@
-prop_pkg - Propeller Package Management
+Propeller Package Management
 ===
 
 1.0.4 Update
