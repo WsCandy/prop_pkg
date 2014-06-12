@@ -1,0 +1,31 @@
+{
+  "name": "prop_pkg",
+  "version": "1.0.4",
+  "description": "Propeller Bower modification for install locations",
+  "main": "bin/prop_pkg",
+  "dependencies": {
+    "bower": "^1.3.5",
+    "bower-logger": "^0.2.2",
+    "mkdirp": "^0.5.0",
+    "cli-color": "^0.3.2",
+    "mout": "^0.9.1",
+    "osenv": "^0.1.0",
+    "q": "^1.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "prop_pkg help"
+  },
+  "repository": {
+    "type": "git",
+    "url": "tbd"
+  },
+  "keywords": [
+    "Propeller"
+  ],
+  "author": "Samuel Woodbridge",
+  "license": "Public",
+  "bin": {
+    "prop_pkg": "bin/prop_pkg"
+  }
+}
