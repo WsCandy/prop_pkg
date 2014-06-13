@@ -62,9 +62,30 @@ self.loop_install = function() {
 
         var file = self.results_info.pkgMeta['main'];
 
-        console.log(notice('\nInstall paths not defined. Moving the "main" file into the correct directory... I hope...\n'));
+        if(file) {
+            
+            console.log(notice('\nInstall paths not defined. Moving the "main" file into the correct directory... I hope...\n'));
 
-        self.create_dirs(file, self.derive_install_path(self.derive_file_type(file)));
+            if(typeof file == 'string') {
+
+                self.create_dirs(file, self.derive_install_path(self.derive_file_type(file)));
+                
+            } else {
+
+                for (var i = 0; i < file.length; i++) {
+
+                    self.create_dirs(file[i], self.derive_install_path(self.derive_file_type(file[i])));
+
+                }
+
+            }
+            
+        } else {
+
+            console.log(notice('\nLooks like the author of '+self.results_info.pkgMeta['name']+' couldn\'t be bothered to set the main file...! You\'re going to have to move files manually, sorry about that!'));
+            self.complete_log();
+
+        }
 
     }
 
