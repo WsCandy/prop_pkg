@@ -1,10 +1,10 @@
 Propeller Package Management
 ===
 
-1.0.4 Update
+1.0.5 Update
 ---
 
-Set "bin" in package.json in order for global install.
+Fallback to "main" in bower.json can now handle arrays!
 
 #####Release History
 
