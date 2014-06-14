@@ -46,10 +46,9 @@ self.complete_log = function() {
 
 self.loop_install = function() {
 
-    self.filesObj = self.results_info.pkgMeta['install'];
-
     if(self.results_info.pkgMeta['install']) {
 
+        self.filesObj = self.results_info.pkgMeta['install'];
         console.log(notice('\nCopying Files...\n'));
 
         for(var key in self.filesObj) {
@@ -60,6 +59,7 @@ self.loop_install = function() {
 
     } else {
 
+        self.filesObj = self.results_info.pkgMeta['main'];
         var file = self.results_info.pkgMeta['main'];
 
         if(file) {
@@ -129,7 +129,7 @@ self.move_file = function(file, path) {
 
         if(self.filesObj) {
 
-            if(install_count == Object.keys(self.filesObj).length) self.complete_log();
+            if(install_count == (typeof self.filesObj == 'object' ? Object.keys(self.filesObj).length : (typeof self.filesObj == 'string' ? 1 : self.filesObj.length))) self.complete_log();
             
         } else {
 
