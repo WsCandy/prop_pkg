@@ -1,10 +1,10 @@
 Propeller Package Management
 ===
 
-1.0.5 Update
+1.0.6 Update
 ---
 
-Fallback to "main" in bower.json can now handle arrays!
+Corrected file counter on the "main" bower installation location fall back. It should now handle everything correctly.
 
 #####Release History
 
