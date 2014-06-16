@@ -1,8 +1,5 @@
 'use strict';
 
-var fs = require('fs');
-var mkdirp = require('mkdirp');
-
 var pp_install = require('../cu_mod/_install');
 
 var colour = require('cli-color'),
@@ -10,7 +7,6 @@ var colour = require('cli-color'),
     error = colour.red;
 
 var self = this;
-
 
 self.callback_handle = function(data, command) {
 
