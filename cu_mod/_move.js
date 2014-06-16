@@ -1,6 +1,7 @@
 'use strict';
 
-var pp_install = require('../cu_mod/_install');
+var pp_install = require('../cu_mod/_install'),
+    pp_uninstall = require('../cu_mod/_uninstall');
 
 var colour = require('cli-color'),
     notice = colour.yellow,
@@ -19,8 +20,12 @@ self.callback_handle = function(data, command) {
         global.install_dir = global.results_info['canonicalDir'];
         pp_install.loop_install();
         
-    } else {
+    } else if(command == 'uninstall'){
 
+        pp_uninstall.uninstall_handle(data);
+
+    } else {
+        
         console.log(error('\nYeah... this package is already installed, keep trying though, don\'t give up!\n'));        
 
     }
