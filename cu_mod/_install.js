@@ -26,8 +26,6 @@ self.loop_install = function() {
 
         }
 
-        self.create_dirs('bower.json', '.bower-cache/'+global.pkg_name, true);
-
     } else {
 
         self.filesObj = global.results_info.pkgMeta['main'];
@@ -59,6 +57,8 @@ self.loop_install = function() {
         }
 
     }
+
+    self.create_dirs('bower.json', '.bower-cache/'+global.pkg_name, true);
 
 }
 
