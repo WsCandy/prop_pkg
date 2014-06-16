@@ -42,6 +42,34 @@ self.uninstall_handle = function(data) {
 
 			}
 			
+		} else {
+
+			if(bower_json.main) {
+
+				self.filesObj = bower_json.main;
+
+				console.log(notice('\nInstall paths not defined. Removing the "main" file from its directory... That\'s the plan anyway...\n'));
+
+				if(typeof self.filesObj == 'string') {
+
+	                self.remove_file(self.filesObj, pp_move.derive_install_path(pp_move.derive_file_type(self.filesObj)));
+		                
+	            } else {
+
+	                for (var i = 0; i < self.filesObj.length; i++) {
+
+	                    self.remove_file(self.filesObj[i], pp_move.derive_install_path(pp_move.derive_file_type(self.filesObj[i])));
+
+	                }
+
+	            }
+
+			} else {
+
+				console.log(notice('\nThe author hasn\'t specified a main file, the package has been removed from your FE Packages folder only'));
+
+			}
+
 		}
 
 	} else {
@@ -53,6 +81,9 @@ self.uninstall_handle = function(data) {
 }
 
 self.remove_file = function(file, dir, silent) {
+
+	file = file.split('/');
+    file = file[file.length -1];
 
 	fs.unlink(dir + '/' + file, function(err) {
 
