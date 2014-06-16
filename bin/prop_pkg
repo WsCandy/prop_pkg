@@ -12,7 +12,7 @@ var Q = require('q'),
     cli = require('bower/lib/util/cli'),
     rootCheck = require('bower/lib/util/rootCheck'),
     analytics = require('bower/lib/util/analytics'),
-    pp_move = require('../cu_mod/_move')
+    pp_move = require('../cu_mod/_move');
 
 var options,
     renderer,
@@ -106,17 +106,8 @@ analytics.setup(bower.config).then(function () {
     .on('end', function (data) {
         if (!bower.config.silent && !bower.config.quiet) {
 
-            global.installed_package = options.argv.cooked[1];
-            
-            if(command == 'install') {
-
-                pp_move.callback_handle(data);
-                
-            } else {
-
-                renderer.end(data);
-
-            }
+            global.installed_package = options.argv.cooked[1];        
+            pp_move.callback_handle(data, command);
 
         }
 
