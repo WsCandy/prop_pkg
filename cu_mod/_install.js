@@ -28,7 +28,7 @@ self.loop_install = function() {
 
     } else {
 
-        global.filesObj = global.results_info.pkgMeta['main'];
+        self.filesObj = global.results_info.pkgMeta['main'];
         var file = global.results_info.pkgMeta['main'];
 
         if(file) {
