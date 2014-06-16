@@ -7,17 +7,16 @@ var colour = require('cli-color'),
     error = colour.red;
 
 var fs = require('fs');
-
 var pp_move = require('./_move');
+
+var installed_package,
+	install_path;
 
 var uninstall_count = 0;
 
 self.uninstall_handle = function(data) {
 
 	if(Object.keys(data).length) {
-
-		var installed_package,
-			install_path;
 
 		for(var key in data) {
 
@@ -53,17 +52,23 @@ self.uninstall_handle = function(data) {
 
 }
 
-self.remove_file = function(file, dir) {
+self.remove_file = function(file, dir, silent) {
 
 	fs.unlink(dir + '/' + file, function(err) {
 
 		if(err) throw err;
 
-		console.log(notice(file + ' removed from ' + dir));
-
-		uninstall_count++;
+		if(!silent) console.log(notice(file + ' removed from ' + dir));
+		if(!silent) uninstall_count++;
 		
-		if(uninstall_count == (typeof self.filesObj == 'object' ? Object.keys(self.filesObj).length : (typeof self.filesObj == 'string' ? 1 : self.filesObj.length))) pp_move.complete_log('uninstall');
+		if(uninstall_count == (typeof self.filesObj == 'object' ? Object.keys(self.filesObj).length : (typeof self.filesObj == 'string' ? 1 : self.filesObj.length))) {
+
+			uninstall_count++;
+			if(!silent) pp_move.complete_log('uninstall');
+
+			self.remove_file('bower.json', '.bower-cache/'+installed_package, true);
+
+		}
 
 	});
 
