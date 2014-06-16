@@ -1,6 +1,6 @@
 {
   "name": "prop_pkg",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "Propeller Bower modification for install locations",
   "main": "bin/prop_pkg",
   "dependencies": {
