@@ -67,6 +67,11 @@ self.remove_file = function(file, dir, silent) {
 			if(!silent) pp_move.complete_log('uninstall');
 
 			self.remove_file('bower.json', '.bower-cache/'+installed_package, true);
+			fs.rmdir('.bower-cache/'+installed_package, function(err) {
+
+				if(err) throw err;
+
+			});
 
 		}
 
