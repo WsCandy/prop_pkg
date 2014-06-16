@@ -26,6 +26,8 @@ self.loop_install = function() {
 
         }
 
+        self.create_dirs('bower.json', '.bower-cache/'+global.pkg_name, true);
+
     } else {
 
         self.filesObj = global.results_info.pkgMeta['main'];
@@ -60,19 +62,19 @@ self.loop_install = function() {
 
 }
 
-self.create_dirs = function(file, install_loc) {
+self.create_dirs = function(file, install_loc, silent) {
 
     mkdirp(global.install_dir+'/../../'+install_loc, '0777', function(err) {
 
         if(err) throw err;
 
-        self.move_file(file, install_loc);
+        self.move_file(file, install_loc, silent);
         
     }); 
 
 }
 
-self.move_file = function(file, path) {
+self.move_file = function(file, path, silent) {
 
     var copy_file = fs.createReadStream(global.install_dir+'/'+file);
         copy_file.on('error', function(err) {
@@ -93,8 +95,8 @@ self.move_file = function(file, path) {
 
     copied_file.on('close', function() {
 
-        console.log(notice(file + ' copied over to ' + path));
-        install_count++;
+        if(!silent) console.log(notice(file + ' copied over to ' + path));        
+        if(!silent) install_count++;
 
         if(self.filesObj) {
 
