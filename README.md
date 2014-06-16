@@ -1,10 +1,10 @@
 Propeller Package Management
 ===
 
-1.0.6 Update
+1.1.0 Update
 ---
 
-Corrected file counter on the "main" bower installation location fall back. It should now handle everything correctly.
+Uninstall methods have now been added to the scripts! Not only will the script remove it from your FE Packages folder it will also remove the files moved around at installation.
 
 #####Release History
 
