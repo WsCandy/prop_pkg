@@ -32,14 +32,22 @@ self.callback_handle = function(data, command) {
 
 }
 
-self.complete_log = function() {
+self.complete_log = function(message) {
 
-    var user_defined = global.results_info.pkgMeta,
-        package_name = user_defined['name'],
-        author = user_defined['authors'],
-        version = global.results_info.endpoint['target'];
-    
-    console.log(notice('\n'+package_name + ' ' + version + ' by ' + (author == undefined ? 'No Author :(' : author) + ' sucessfully installed!! Lucky you.\n'));
+    if(message == 'uninstall') {
+
+        console.log(notice('\nPackage uninstalled successfully! Wow, amazing.\n'));
+
+    } else {
+
+        var user_defined = global.results_info.pkgMeta,
+            package_name = user_defined['name'],
+            author = user_defined['authors'],
+            version = global.results_info.endpoint['target'];
+        
+        console.log(notice('\n'+package_name + ' ' + version + ' by ' + (author == undefined ? 'No Author :(' : author) + ' sucessfully installed!! Lucky you.\n'));
+        
+    }
 
 }
 
