@@ -18,7 +18,7 @@ self.loop_install = function() {
     if(global.results_info.pkgMeta['install']) {
 
         self.filesObj = global.results_info.pkgMeta['install'];
-        console.log(notice('\nCopying Files...\n'));
+        console.log(notice('\nInstall directories defined! Copying Files...\n'));
 
         for(var key in self.filesObj) {
 
