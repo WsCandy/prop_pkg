@@ -28,10 +28,10 @@ self.loop_install = function() {
 
     } else {
 
-        self.filesObj = global.results_info.pkgMeta['main'];
-        var file = global.results_info.pkgMeta['main'];
-
-        if(file) {
+        if(global.results_info.pkgMeta['main']) {
+            
+            self.filesObj = global.results_info.pkgMeta['main'];
+            var file = global.results_info.pkgMeta['main'];
             
             console.log(notice('\nInstall paths not defined. Moving the "main" file into the correct directory... I hope...\n'));
 
@@ -52,7 +52,6 @@ self.loop_install = function() {
         } else {
 
             console.log(notice('\nLooks like the author of '+global.results_info.pkgMeta['name']+' couldn\'t be bothered to set the main file...! You\'re going to have to move files manually, sorry about that!'));
-            pp_move.complete_log();
 
         }
 
