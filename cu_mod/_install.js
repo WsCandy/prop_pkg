@@ -37,13 +37,13 @@ self.loop_install = function() {
 
             if(typeof file == 'string') {
 
-                self.create_dirs(file, self.derive_install_path(self.derive_file_type(file)));
+                self.create_dirs(file, pp_move.derive_install_path(pp_move.derive_file_type(file)));
                 
             } else {
 
                 for (var i = 0; i < file.length; i++) {
 
-                    self.create_dirs(file[i], self.derive_install_path(self.derive_file_type(file[i])));
+                    self.create_dirs(file[i], pp_move.derive_install_path(pp_move.derive_file_type(file[i])));
 
                 }
 
@@ -100,7 +100,11 @@ self.move_file = function(file, path, silent) {
 
         if(self.filesObj) {
 
-            if(install_count == (typeof self.filesObj == 'object' ? Object.keys(self.filesObj).length : (typeof self.filesObj == 'string' ? 1 : self.filesObj.length))) pp_move.complete_log();
+            if(install_count == (typeof self.filesObj == 'object' ? Object.keys(self.filesObj).length : (typeof self.filesObj == 'string' ? 1 : self.filesObj.length))) {
+
+                if(!silent) pp_move.complete_log();
+                
+            }
             
         } else {
 
