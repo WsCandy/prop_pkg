@@ -22,6 +22,7 @@ When working with prop_pkg there are a few things to take into consideration.
 * Dependencies will be downloaded but won't be installed in their appropriate locations, this may be looked at in future, depends on feedback.
 
 Setting up your repo:
+---
 
 To get your repositories working with properly with prop_pkg you have to create a bower.json file. This file contains all the information associated with your repository including install directories, your name package name etc!
 
