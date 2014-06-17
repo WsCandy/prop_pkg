@@ -26,4 +26,34 @@ to get all the required dependencies.
 Commands:
 ---
 
-Coming soon.
+#####Basic
+
+	ppm
+
+This will return a list of commands that you can use.
+
+####Search
+
+	ppm search propcom
+
+This will search for the term 'propcom' and will return a list of available packages.
+
+#####Installation
+
+	ppm install propcom-zRS
+
+This will install the latest release version of the package, in this instance it's 2.6.7.
+
+	ppm install propcom-zRS#2.6.6
+
+This will install version tagged 2.6.6!
+
+	ppm install propcom-zRS#master
+
+This will install the master branch.
+
+#####Uninstallation
+
+	ppm uninstall propcom-zRS
+
+This will uninstall the package from your FE Packages folder and from their original install paths.
