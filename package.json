@@ -1,6 +1,6 @@
 {
   "name": "prop_pkg",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Propeller Bower modification for install locations",
   "main": "bin/prop_pkg",
   "dependencies": {
@@ -14,7 +14,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "prop_pkg help"
+    "test": "ppm help"
   },
   "repository": {
     "type": "git",
@@ -26,6 +26,6 @@
   "author": "Samuel Woodbridge",
   "license": "Public",
   "bin": {
-    "prop_pkg": "bin/prop_pkg"
+    "ppm": "bin/prop_pkg"
   }
 }
