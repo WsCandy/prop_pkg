@@ -106,8 +106,14 @@ analytics.setup(bower.config).then(function () {
     .on('end', function (data) {
         if (!bower.config.silent && !bower.config.quiet) {
 
-            global.installed_package = options.argv.cooked[1];        
-            pp_move.callback_handle(data, command);
+            renderer.end(data);
+            global.installed_package = options.argv.cooked[1];
+
+            if(command == 'install' || command == 'uninstall') {
+
+                pp_move.callback_handle(data, command);
+                
+            }
 
         }
 
