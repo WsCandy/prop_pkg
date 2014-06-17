@@ -26,7 +26,7 @@ to get all the required dependencies.
 Commands:
 ---
 
-#####Basic
+####Basic
 
 	ppm
 
@@ -38,7 +38,7 @@ This will return a list of commands that you can use.
 
 This will search for the term 'propcom' and will return a list of available packages.
 
-#####Installation
+####Installation
 
 	ppm install propcom-zRS
 
@@ -52,7 +52,7 @@ This will install version tagged 2.6.6!
 
 This will install the master branch.
 
-#####Uninstallation
+####Uninstallation
 
 	ppm uninstall propcom-zRS
 
