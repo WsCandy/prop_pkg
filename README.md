@@ -77,6 +77,12 @@ This will return a list of commands that you can use.
 
 This will search for the term 'propcom' and will return a list of available packages.
 
+####Information
+
+	ppm info propcom-zRS
+
+This command will return information such as available versions for the specified package.
+
 ####Installation
 
 	ppm install propcom-zRS
