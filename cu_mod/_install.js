@@ -13,7 +13,10 @@ var pp_move = require('./_move');
 
 var install_count = 0;
 
-self.loop_install = function() {
+
+self.loop_install = function(answ) {
+
+    self.answ = answ;
 
     if(global.results_info.pkgMeta['install']) {
 
@@ -63,7 +66,19 @@ self.loop_install = function() {
 
 self.create_dirs = function(file, install_loc, silent) {
 
-    mkdirp(global.install_dir+'/../../'+install_loc, '0777', function(err) {
+    if(self.answ.template) {
+
+        console.log(install_loc);
+
+        var install_dest = global.install_dir+'/../../'+install_loc;
+
+    } else {
+
+        var install_dest = global.install_dir+'/../../'+install_loc;
+
+    }
+
+    mkdirp(install_dest, '0777', function(err) {
 
         if(err) throw err;
 
