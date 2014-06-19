@@ -7,6 +7,9 @@ var colour = require('cli-color'),
     notice = colour.yellow,
     error = colour.red;
 
+var inq = require('inquirer'),
+    fs = require('fs');
+
 var self = this;
 
 self.callback_handle = function(data, command) {
@@ -18,7 +21,8 @@ self.callback_handle = function(data, command) {
     if(global.results_info && command == 'install') {
     
         global.install_dir = global.results_info['canonicalDir'];
-        pp_install.loop_install();
+
+        self.askQuestions(pp_install.loop_install);
         
     } else if(command == 'uninstall'){
 
@@ -48,6 +52,52 @@ self.complete_log = function(message) {
         console.log(notice('\n'+package_name + ' ' + version + ' by ' + (author == undefined ? 'No Author :(' : author) + ' sucessfully installed!! Lucky you.\n'));
         
     }
+
+}
+
+self.getPSdirs = function() {
+
+    var templates = fs.readdirSync('httpdocs/assets/templates');
+
+    return templates;
+
+}
+
+self.askQuestions = function(callback) {
+
+    var questions = [
+
+        {
+
+            type: 'confirm',
+            name: 'prop_shop',
+            message: 'Is this a propshop site?',
+            default: false
+            
+        },
+
+        {
+
+            type: 'list',
+            name: 'template',
+            message: 'Which template are you working out of?',
+            default: 'default',
+            choices: self.getPSdirs(),
+            when: function(answ) {
+
+                return answ.prop_shop != false;
+
+            }
+
+        }
+
+    ];
+
+    inq.prompt(questions, function(answ) {
+
+        callback(answ);
+
+    });
 
 }
 
