@@ -14,7 +14,7 @@ var self = this;
 
 self.callback_handle = function(data, command) {
 
-    global.data = data;    
+    global.data = data;
     global.pkg_name = global.installed_package.split('#');
     global.results_info = global.data[global.pkg_name[0]];
 
@@ -57,7 +57,13 @@ self.complete_log = function(message) {
 
 self.getPSdirs = function() {
 
-    var templates = fs.readdirSync('httpdocs/assets/templates');
+    var templates = fs.readdir('public/assets/templates');
+
+    if(!templates) {
+
+        templates = ['No templates detected!'];
+
+    }
 
     return templates;
 
@@ -70,8 +76,8 @@ self.askQuestions = function(callback) {
         {
 
             type: 'confirm',
-            name: 'prop_shop',
-            message: 'Is this a propshop site?',
+            name: 'templates',
+            message: 'Does this site use templates?',
             default: false
             
         },
@@ -85,7 +91,7 @@ self.askQuestions = function(callback) {
             choices: self.getPSdirs(),
             when: function(answ) {
 
-                return answ.prop_shop != false;
+                return answ.templates != false;
 
             }
 
@@ -110,6 +116,6 @@ self.derive_file_type = function(file) {
 
 self.derive_install_path = function(type) {
 
-    return 'httpdocs/assets/'+type;
+    return 'public/assets/'+type;
 
 }

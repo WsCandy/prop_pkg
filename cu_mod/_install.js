@@ -9,7 +9,8 @@ var colour = require('cli-color'),
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 
-var pp_move = require('./_move');
+var pp_move = require('./_move'),
+    pp_uninstall = require('../cu_mod/_uninstall');
 
 var install_count = 0;
 
@@ -17,6 +18,18 @@ var install_count = 0;
 self.loop_install = function(answ) {
 
     self.answ = answ;
+
+    if(self.answ.template === 'No templates detected!') {
+
+         fs.rmdir(global.install_dir, function() {
+
+            console.log(error('\nNo templates detected, aborting!\nCreate a template and Try again! \n'));
+
+         });
+
+         return;
+
+    }
 
     if(global.results_info.pkgMeta['install']) {
 
