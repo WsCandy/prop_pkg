@@ -12,6 +12,8 @@ var mkdirp = require('mkdirp');
 var pp_move = require('./_move'),
     pp_uninstall = require('../cu_mod/_uninstall');
 
+var rimraf = require('rimraf');
+
 var install_count = 0;
 
 
@@ -21,7 +23,7 @@ self.loop_install = function(answ) {
 
     if(self.answ.template === 'No templates detected!') {
 
-         fs.rmdir(global.install_dir, function() {
+         rimraf(global.install_dir, function() {
 
             console.log(error('\nNo templates detected, aborting!\nCreate a template and Try again! \n'));
 
@@ -81,7 +83,21 @@ self.create_dirs = function(file, install_loc, silent) {
 
     if(self.answ.template) {
 
-        console.log(install_loc);
+        var install = install_loc.split('/'),
+            assetsPos;
+
+        for(var i = 0; i < install.length -1; i++) {
+
+            if(i <= assetsPos) continue;
+            assetsPos = (install[i] == 'assets' ? null : i);
+
+        }
+
+        if(assetsPos) install.splice(assetsPos, 0, 'templates/'+self.answ.template);
+
+        install_loc = install.join('/');
+        
+        if(assetsPos) self.filesObj[file] = install_loc;
 
         var install_dest = global.install_dir+'/../../'+install_loc;
 
@@ -123,8 +139,8 @@ self.move_file = function(file, path, silent) {
     copied_file.on('close', function() {
 
         if(!silent) console.log(notice(file + ' copied over to ' + path));        
-        if(!silent) install_count++;
-
+        if(!silent) install_count++;        
+        
         if(self.filesObj) {
 
             if(install_count == (typeof self.filesObj == 'object' ? Object.keys(self.filesObj).length : (typeof self.filesObj == 'string' ? 1 : self.filesObj.length))) {
@@ -136,6 +152,12 @@ self.move_file = function(file, path, silent) {
         } else {
 
             pp_move.complete_log();
+
+        }
+
+        if(file == 'bower.json') {
+
+            fs.writeFile('.bower-cache/'+global.pkg_name+'/bower.json', JSON.stringify(global.results_info.pkgMeta));
 
         }
 

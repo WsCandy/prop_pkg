@@ -8,7 +8,9 @@ var colour = require('cli-color'),
     error = colour.red;
 
 var inq = require('inquirer'),
-    fs = require('fs');
+    fs = require('fs'),
+    events = require('events'),
+    eventEmitter = new events.EventEmitter();
 
 var self = this;
 
@@ -22,7 +24,13 @@ self.callback_handle = function(data, command) {
     
         global.install_dir = global.results_info['canonicalDir'];
 
-        self.askQuestions(pp_install.loop_install);
+        eventEmitter.on('success', function(templates) {
+
+            self.askQuestions(pp_install.loop_install, templates);
+            
+        });
+
+        self.getPSdirs();
         
     } else if(command == 'uninstall'){
 
@@ -56,20 +64,36 @@ self.complete_log = function(message) {
 }
 
 self.getPSdirs = function() {
+    
+    var templates = [];
 
-    var templates = fs.readdir('public/assets/templates');
+    fs.readdir('public/assets/templates', function(err, files) {
 
-    if(!templates) {
+        if(err || files.length === 0) {
 
-        templates = ['No templates detected!'];
+            templates.push('No templates detected!');
+            
+        } else {
 
-    }
+            for(var i = 0; i < files.length; i++) {
 
-    return templates;
+                if(fs.statSync('public/assets/templates/'+files[i]).isDirectory() === true) {
+
+                    templates.push(files[i]);
+
+                }
+
+            }
+
+        }
+
+        eventEmitter.emit('success', templates);
+
+    });
 
 }
 
-self.askQuestions = function(callback) {
+self.askQuestions = function(callback, templates) {
 
     var questions = [
 
@@ -87,8 +111,8 @@ self.askQuestions = function(callback) {
             type: 'list',
             name: 'template',
             message: 'Which template are you working out of?',
-            default: 'default',
-            choices: self.getPSdirs(),
+            default: 'No templates detected!',
+            choices: templates,
             when: function(answ) {
 
                 return answ.templates != false;
