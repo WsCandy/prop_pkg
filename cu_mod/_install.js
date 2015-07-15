@@ -117,7 +117,7 @@ self.create_dirs = function(file, install_loc, silent) {
 
 self.move_file = function(file, path, silent) {
 
-    var jsStream = fs.readFileSync('public/assets/js/src/main.js', {encoding: 'utf8'}),
+    var jsStream = fs.readFileSync(process.env.PWD+'/public/assets/js/src/main.js', {encoding: 'utf8'}),
         fileData,
         jsArray,
         sassArray;
@@ -150,7 +150,7 @@ self.move_file = function(file, path, silent) {
         jsArray[jsArray.length - 3] = jsArray[jsArray.length - 3] + ',\n\n\t' + package_name + '__ready : function() { \n\n\t\t'+install_code.join('\n\t\t')+'\n\n\t}';
         fileData = jsArray.join('\n');
 
-        fs.writeFileSync('public/assets/js/src/main.js', fileData, {encoding: 'utf8', flags: 'w'});
+        fs.writeFileSync(process.env.PWD+'/public/assets/js/src/main.js', fileData, {encoding: 'utf8', flags: 'w'});
 
          console.log(notice(package_name + '__ready Written into main.js - Line: ' + (jsArray.length)));
 
@@ -160,7 +160,7 @@ self.move_file = function(file, path, silent) {
 
     } else if(isSrc[isSrc.length -2] === 'sass') { 
 
-        var sassStream = fs.readFileSync('public/assets/sass/main.scss', {encoding: 'utf8'});
+        var sassStream = fs.readFileSync(process.env.PWD+'/public/assets/sass/main.scss', {encoding: 'utf8'});
         
         sassArray = sassStream.split('\n')
 
@@ -182,7 +182,7 @@ self.move_file = function(file, path, silent) {
         
         fileData = sassArray.join('\n');
 
-        fs.writeFileSync('public/assets/sass/main.scss', fileData, {encoding: 'utf8', flags: 'w'});
+        fs.writeFileSync(process.env.PWD+'/public/assets/sass/main.scss', fileData, {encoding: 'utf8', flags: 'w'});
         self.fileCopy(file, path, silent);
         console.log(notice('@import "'+isSrc[isSrc.length - 1]+'/' + filename[filename.length -2] + '" Written into main.scss - Line: ' + (insertLine + 2)));
 
