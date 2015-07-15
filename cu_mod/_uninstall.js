@@ -87,9 +87,9 @@ self.remove_file = function(file, dir, silent) {
 
 	fs.unlink(dir + '/' + file, function(err) {
 
-		if(err) throw err;
+		if(err) console.log(notice('You have already deleted ' + file + ' skipping!'));
 
-		if(!silent) console.log(notice(file + ' removed from ' + dir));
+		if(!silent && !err) console.log(notice(file + ' removed from ' + dir));
 		if(!silent) uninstall_count++;
 		
 		if(uninstall_count == (typeof self.filesObj == 'object' ? Object.keys(self.filesObj).length : (typeof self.filesObj == 'string' ? 1 : self.filesObj.length))) {

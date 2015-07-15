@@ -151,7 +151,6 @@ self.move_file = function(file, path, silent) {
 
             inq.prompt(questions, function(answ) {
 
-
                 var init = fs.createReadStream(global.install_dir+'/'+file, {encoding: 'utf8'})
 
                 init.on('data', function(chunk) {
@@ -166,8 +165,9 @@ self.move_file = function(file, path, silent) {
 
                     var writeStream = fs.createWriteStream('httpdocs/assets/js/src/main.js', {encoding: 'utf8', flags: 'w'});
                     writeStream.write(fileData);
+                    install_count++;
 
-                    self.fileCopy(file, path, silent);
+                    self.trackInstall(silent);
 
                 });
 
@@ -183,7 +183,7 @@ self.move_file = function(file, path, silent) {
 
 }
 
-self.fileCopy = function(file, path, silent) {
+self.fileCopy = function(file, path, silent, copy) {
 
     var copy_file = fs.createReadStream(global.install_dir+'/'+file);
         copy_file.on('error', function(err) {
@@ -207,19 +207,7 @@ self.fileCopy = function(file, path, silent) {
         if(!silent) console.log(notice(file + ' copied over to ' + path));        
         if(!silent) install_count++;        
         
-        if(self.filesObj) {
-
-            if(install_count == (typeof self.filesObj == 'object' ? Object.keys(self.filesObj).length : (typeof self.filesObj == 'string' ? 1 : self.filesObj.length))) {
-
-                if(!silent) pp_move.complete_log();
-                
-            }
-            
-        } else {
-
-            pp_move.complete_log();
-
-        }
+        self.trackInstall(silent);
 
         if(file == 'bower.json') {
 
@@ -230,5 +218,24 @@ self.fileCopy = function(file, path, silent) {
     });
 
     copy_file.pipe(copied_file);
+
+
+}
+
+self.trackInstall = function(silent) {
+
+    if(self.filesObj) {
+
+        if(install_count == (typeof self.filesObj == 'object' ? Object.keys(self.filesObj).length : (typeof self.filesObj == 'string' ? 1 : self.filesObj.length))) {
+
+            if(!silent) pp_move.complete_log();
+            
+        }
+        
+    } else {
+
+        pp_move.complete_log();
+
+    }
 
 }
