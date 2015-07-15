@@ -12,7 +12,8 @@ var mkdirp = require('mkdirp');
 var pp_move = require('./_move'),
     pp_uninstall = require('../cu_mod/_uninstall');
 
-var rimraf = require('rimraf');
+var rimraf = require('rimraf'),
+    inq = require('inquirer');
 
 var install_count = 0;
 
@@ -117,7 +118,72 @@ self.create_dirs = function(file, install_loc, silent) {
 
 }
 
+
 self.move_file = function(file, path, silent) {
+
+    var readStream = fs.createReadStream('httpdocs/assets/js/src/main.js', {encoding: 'utf8'}),
+        fileData,
+        array
+
+    readStream.on('data', function(chunk) {
+
+        array = chunk.split('\n');
+
+    })
+    .on('end', function() {
+
+        var questions = [
+
+             {
+
+                type: 'input',
+                name: 'func',
+                message: 'What function name would you like?',
+                default: 'install'
+                
+            }
+
+        ];
+
+        var isSrc = path.split('/');
+
+        if(isSrc[isSrc.length -1] === 'src') {
+
+            inq.prompt(questions, function(answ) {
+
+
+                var init = fs.createReadStream(global.install_dir+'/'+file, {encoding: 'utf8'})
+
+                init.on('data', function(chunk) {
+
+                    var install_code = chunk.split('\n');
+
+                    array[array.length - 3] = array[array.length - 3] + ',\n\n\t' + answ.func + '__ready : function() { \n\n\t\t'+install_code.join('\n\t\t')+'\n\n\t}';
+                    fileData = array.join('\n');
+
+                })
+                .on('end', function() {
+
+                    var writeStream = fs.createWriteStream('httpdocs/assets/js/src/main.js', {encoding: 'utf8', flags: 'w'});
+                    writeStream.write(fileData);
+
+                    self.fileCopy(file, path, silent);
+
+                });
+
+            });
+
+        } else {
+
+            self.fileCopy(file, path, silent);
+
+        }
+
+    });
+
+}
+
+self.fileCopy = function(file, path, silent) {
 
     var copy_file = fs.createReadStream(global.install_dir+'/'+file);
         copy_file.on('error', function(err) {

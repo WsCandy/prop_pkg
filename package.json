@@ -1,6 +1,6 @@
 {
   "name": "prop_pkg",
-  "version": "1.1.2",
+  "version": "1.1.4",
   "description": "Propeller Bower modification for install locations",
   "main": "bin/prop_pkg",
   "dependencies": {
@@ -10,7 +10,9 @@
     "cli-color": "^0.3.2",
     "mout": "^0.9.1",
     "osenv": "^0.1.0",
-    "q": "^1.0.1"
+    "q": "^1.0.1",
+    "rimraf": "^2.4.1",
+    "inquirer": "^0.8.5"
   },
   "devDependencies": {},
   "scripts": {
@@ -27,5 +29,9 @@
   "license": "Public",
   "bin": {
     "ppm": "bin/prop_pkg"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/WsCandy/prop_pkg/issues"
+  },
+  "homepage": "https://github.com/WsCandy/prop_pkg"
 }
