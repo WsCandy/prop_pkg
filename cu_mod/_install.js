@@ -108,111 +108,90 @@ self.create_dirs = function(file, install_loc, silent) {
 
     }
 
-    mkdirp(install_dest, '0777', function(err) {
-
-        if(err) throw err;
-
-        self.move_file(file, install_loc, silent);
-        
-    }); 
+    mkdirp.sync(install_dest, '0777'); 
+    
+    self.move_file(file, install_loc, silent);
 
 }
 
 
 self.move_file = function(file, path, silent) {
 
-    var jsStream = fs.createReadStream('httpdocs/assets/js/src/main.js', {encoding: 'utf8'}),
+    var jsStream = fs.readFileSync('httpdocs/assets/js/src/main.js', {encoding: 'utf8'}),
         fileData,
         jsArray,
         sassArray;
 
-    jsStream.on('data', function(chunk) {
+    jsArray = jsStream.split('\n');
 
-        jsArray = chunk.split('\n');
+    var questions = [
 
-    })
-    .on('end', function() {
+         {
 
-        var questions = [
+            type: 'input',
+            name: 'func',
+            message: 'What function name would you like?',
+            default: 'install'
+            
+        }
 
-             {
+    ];
 
-                type: 'input',
-                name: 'func',
-                message: 'What function name would you like?',
-                default: 'install'
+    var isSrc = path.split('/');
+
+    if(isSrc[isSrc.length -1] === 'src' && isSrc[isSrc.length -2] === 'js') {
+
+        var init = fs.readFileSync(global.install_dir+'/'+file, {encoding: 'utf8'}),
+            install_code = init.split('\n');
+
+        var user_defined = global.results_info.pkgMeta,
+            package_name = user_defined['name'];
+
+        jsArray[jsArray.length - 3] = jsArray[jsArray.length - 3] + ',\n\n\t' + package_name + '__ready : function() { \n\n\t\t'+install_code.join('\n\t\t')+'\n\n\t}';
+        fileData = jsArray.join('\n');
+
+        fs.writeFileSync('httpdocs/assets/js/src/main.js', fileData, {encoding: 'utf8', flags: 'w'});
+
+         console.log(notice(package_name + '__ready Written into main.js - Line: ' + (jsArray.length)));
+
+        install_count++;
+        self.trackInstall(silent);
+
+
+    } else if(isSrc[isSrc.length -2] === 'sass') { 
+
+        var sassStream = fs.readFileSync('httpdocs/assets/sass/main.scss', {encoding: 'utf8'});
+        
+        sassArray = sassStream.split('\n')
+
+        var insertLine = (sassArray.length -1),
+            filename = file.split('/')
+
+        for(var i = 0; i < sassArray.length -1; i++) {
+
+            if(sassArray[i].indexOf(isSrc[isSrc.length -1]) > 0) {
+
+                insertLine = i;
                 
             }
 
-        ];
-
-        var isSrc = path.split('/');
-
-        if(isSrc[isSrc.length -1] === 'src' && isSrc[isSrc.length -2] === 'js') {
-
-            inq.prompt(questions, function(answ) {
-
-                var init = fs.createReadStream(global.install_dir+'/'+file, {encoding: 'utf8'})
-
-                init.on('data', function(chunk) {
-
-                    var install_code = chunk.split('\n');
-
-                    jsArray[jsArray.length - 3] = jsArray[jsArray.length - 3] + ',\n\n\t' + answ.func + '__ready : function() { \n\n\t\t'+install_code.join('\n\t\t')+'\n\n\t}';
-                    fileData = jsArray.join('\n');
-
-                })
-                .on('end', function() {
-
-                    var writeStream = fs.createWriteStream('httpdocs/assets/js/src/main.js', {encoding: 'utf8', flags: 'w'});
-                    writeStream.write(fileData);
-                    install_count++;
-
-                    self.trackInstall(silent);
-
-                });
-
-            });
-
-        } else if(isSrc[isSrc.length -2] === 'sass') { 
-
-            self.fileCopy(file, path, silent);
-
-            var sassStream = fs.readFileSync('httpdocs/assets/sass/main.scss', {encoding: 'utf8'});
-            
-            sassArray = sassStream.split('\n')
-
-            var insertLine = (sassArray.length -1),
-                filename = file.split('/')
-
-            for(var i = 0; i < sassArray.length -1; i++) {
-
-                if(sassArray[i].indexOf(isSrc[isSrc.length -1]) > 0) {
-
-                    insertLine = i;
-                    
-                }
-
-            }
-
-            filename = filename[filename.length -1].split('.');
-            sassArray.splice((insertLine + 1), 0, '@import "'+isSrc[isSrc.length - 1]+'/' + filename[filename.length -2] + '"')
-            
-            fileData = sassArray.join('\n');
-
-            console.log(insertLine);
-
-            fs.writeFileSync('httpdocs/assets/sass/main.scss', fileData, {encoding: 'utf8', flags: 'w'});
-            console.log(notice('\n@import "'+isSrc[isSrc.length - 1]+'/' + filename[filename.length -2] + '" Written into main.scss\n'));
-
-
-        } else {
-
-            self.fileCopy(file, path, silent);
-
         }
 
-    });
+        filename = filename[filename.length -1].split('.');
+        sassArray.splice((insertLine + 1), 0, '@import "'+isSrc[isSrc.length - 1]+'/' + filename[filename.length -2] + '"');
+        
+        fileData = sassArray.join('\n');
+
+        fs.writeFileSync('httpdocs/assets/sass/main.scss', fileData, {encoding: 'utf8', flags: 'w'});
+        self.fileCopy(file, path, silent);
+        console.log(notice('@import "'+isSrc[isSrc.length - 1]+'/' + filename[filename.length -2] + '" Written into main.scss - Line: ' + (insertLine + 2)));
+
+
+    } else {
+
+        self.fileCopy(file, path, silent);
+
+    }
 
 }
 
