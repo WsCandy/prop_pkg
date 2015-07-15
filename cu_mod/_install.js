@@ -12,7 +12,8 @@ var mkdirp = require('mkdirp');
 var pp_move = require('./_move'),
     pp_uninstall = require('../cu_mod/_uninstall');
 
-var rimraf = require('rimraf');
+var rimraf = require('rimraf'),
+    inq = require('inquirer');
 
 var install_count = 0;
 
@@ -107,17 +108,94 @@ self.create_dirs = function(file, install_loc, silent) {
 
     }
 
-    mkdirp(install_dest, '0777', function(err) {
-
-        if(err) throw err;
-
-        self.move_file(file, install_loc, silent);
-        
-    }); 
+    mkdirp.sync(install_dest, '0777'); 
+    
+    self.move_file(file, install_loc, silent);
 
 }
 
+
 self.move_file = function(file, path, silent) {
+
+    var jsStream = fs.readFileSync('httpdocs/assets/js/src/main.js', {encoding: 'utf8'}),
+        fileData,
+        jsArray,
+        sassArray;
+
+    jsArray = jsStream.split('\n');
+
+    var questions = [
+
+         {
+
+            type: 'input',
+            name: 'func',
+            message: 'What function name would you like?',
+            default: 'install'
+            
+        }
+
+    ];
+
+    var isSrc = path.split('/');
+
+    if(isSrc[isSrc.length -1] === 'src' && isSrc[isSrc.length -2] === 'js') {
+
+        var init = fs.readFileSync(global.install_dir+'/'+file, {encoding: 'utf8'}),
+            install_code = init.split('\n');
+
+        var user_defined = global.results_info.pkgMeta,
+            package_name = user_defined['name'];
+
+        jsArray[jsArray.length - 3] = jsArray[jsArray.length - 3] + ',\n\n\t' + package_name + '__ready : function() { \n\n\t\t'+install_code.join('\n\t\t')+'\n\n\t}';
+        fileData = jsArray.join('\n');
+
+        fs.writeFileSync('httpdocs/assets/js/src/main.js', fileData, {encoding: 'utf8', flags: 'w'});
+
+         console.log(notice(package_name + '__ready Written into main.js - Line: ' + (jsArray.length)));
+
+        install_count++;
+        self.trackInstall(silent);
+
+
+    } else if(isSrc[isSrc.length -2] === 'sass') { 
+
+        var sassStream = fs.readFileSync('httpdocs/assets/sass/main.scss', {encoding: 'utf8'});
+        
+        sassArray = sassStream.split('\n')
+
+        var insertLine = (sassArray.length -1),
+            filename = file.split('/')
+
+        for(var i = 0; i < sassArray.length -1; i++) {
+
+            if(sassArray[i].indexOf(isSrc[isSrc.length -1]) > 0) {
+
+                insertLine = i;
+                
+            }
+
+        }
+
+        filename = filename[filename.length -1].split('.');
+        sassArray.splice((insertLine + 1), 0, '@import "'+isSrc[isSrc.length - 1]+'/' + filename[filename.length -2] + '"');
+        
+        fileData = sassArray.join('\n');
+
+        fs.writeFileSync('httpdocs/assets/sass/main.scss', fileData, {encoding: 'utf8', flags: 'w'});
+        self.fileCopy(file, path, silent);
+        console.log(notice('@import "'+isSrc[isSrc.length - 1]+'/' + filename[filename.length -2] + '" Written into main.scss - Line: ' + (insertLine + 2)));
+
+
+    } else {
+
+        self.fileCopy(file, path, silent);
+
+    }
+
+}
+
+self.fileCopy = function(file, path, silent, copy) {
 
     var copy_file = fs.createReadStream(global.install_dir+'/'+file);
         copy_file.on('error', function(err) {
@@ -141,19 +219,7 @@ self.move_file = function(file, path, silent) {
         if(!silent) console.log(notice(file + ' copied over to ' + path));        
         if(!silent) install_count++;        
         
-        if(self.filesObj) {
-
-            if(install_count == (typeof self.filesObj == 'object' ? Object.keys(self.filesObj).length : (typeof self.filesObj == 'string' ? 1 : self.filesObj.length))) {
-
-                if(!silent) pp_move.complete_log();
-                
-            }
-            
-        } else {
-
-            pp_move.complete_log();
-
-        }
+        self.trackInstall(silent);
 
         if(file == 'bower.json') {
 
@@ -164,5 +230,24 @@ self.move_file = function(file, path, silent) {
     });
 
     copy_file.pipe(copied_file);
+
+
+}
+
+self.trackInstall = function(silent) {
+
+    if(self.filesObj) {
+
+        if(install_count == (typeof self.filesObj == 'object' ? Object.keys(self.filesObj).length : (typeof self.filesObj == 'string' ? 1 : self.filesObj.length))) {
+
+            if(!silent) pp_move.complete_log();
+            
+        }
+        
+    } else {
+
+        pp_move.complete_log();
+
+    }
 
 }
